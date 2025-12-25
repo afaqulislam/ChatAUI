@@ -82,14 +82,25 @@ async def handle_message(message: cl.Message):
     history = cl.user_session.get("history", [])
     history.append({"role": "user", "content": message.content})
 
-    # Create an empty message placeholder on frontend
-    msg = cl.Message(content="🔃 Thinking...")
-    await msg.send()
+    # 🔹 1. Show custom loader
+    loader_el = cl.CustomElement(
+        name="DottedLoader",
+        display="inline"
+    )
+
+    loader_msg = cl.Message(
+        content="",
+        elements=[loader_el]
+    )
+    await loader_msg.send()
+
     try:
         result = Runner.run_streamed(agent, input=history)
 
-        full_response = ""
+        # 🔹 2. Prepare assistant streaming message (but DO NOT send yet)
+        assistant_msg = cl.Message(content="")
         first_token = True
+        full_response = ""
 
         async for event in result.stream_events():
             if event.type == "raw_response_event" and isinstance(
@@ -97,21 +108,22 @@ async def handle_message(message: cl.Message):
             ):
                 delta = event.data.delta
 
-                # Only clear "Thinking..." when the first **non-empty token** arrives
-                if first_token and delta.strip() != "":
-                    msg.content = ""  # Clear placeholder
-                    await msg.update()
+                if first_token and delta.strip():
+                    # ❌ Remove loader
+                    await loader_msg.remove()
+
+                    # ✅ Send assistant message now
+                    await assistant_msg.send()
                     first_token = False
 
                 full_response += delta
-                await msg.stream_token(delta)
+                await assistant_msg.stream_token(delta)
 
-        await msg.update()
+        await assistant_msg.update()
 
-        # Save final response to chat history
         history.append({"role": "assistant", "content": full_response})
         cl.user_session.set("history", history)
+
     except Exception as e:
-        msg.content = f"Error: {e}"
-        await msg.update()
-        # print("Error:", e)
+        await loader_msg.remove()
+        await cl.Message(content=f"❌ Error: {e}").send()

@@ -51,6 +51,7 @@ data = {
             "Git & GitHub",
             "Vercel",
             "Render",
+            "Hugging Face",
             "Railway",
             "Figma (Design to Code)",
             "VS Code",
