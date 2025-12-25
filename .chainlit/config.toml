@@ -1,0 +1,110 @@
+# =============================================
+# Chainlit Configuration for Hugging Face + OAuth + HTTPS
+# =============================================
+
+[server]
+# Required when running behind Hugging Face's proxy
+trust_proxy = true
+
+# =============================================
+# Core Chainlit Configuration
+# =============================================
+
+[chainlit]
+# Redirect URI and public access URL
+public_url = "https://afaqulislam-chataui.hf.space"
+
+# =============================================
+# OAuth: Trust Hugging Face's reverse proxy
+# =============================================
+
+[chainlit.oauth]
+# Hugging Face ke liye temporarily 0.0.0.0/0
+trusted_proxies = ["0.0.0.0/0"]
+
+# Session & timeout
+session_timeout = 3600         # 1 hour inactive
+user_session_timeout = 1296000 # 15 days active
+
+# Environment variables (add if needed)
+user_env = []
+
+# Caching
+cache = false
+persist_user_env = false
+mask_user_env = false
+
+# CORS
+allow_origins = ["https://afaqulislam-chataui.hf.space"]
+
+# =============================================
+# Features
+# =============================================
+[features]
+unsafe_allow_html = false
+latex = false
+user_message_autoscroll = true
+auto_tag_thread = true
+edit_message = true
+allow_thread_sharing = false
+
+[features.slack]
+reaction_on_message_received = false
+
+[features.spontaneous_file_upload]
+enabled = true
+accept = ["*/*"]
+max_files = 20
+max_size_mb = 500
+
+[features.audio]
+enabled = false
+sample_rate = 24000
+
+[features.mcp]
+enabled = false
+
+[features.mcp.sse]
+enabled = true
+
+[features.mcp.streamable-http]
+enabled = true
+
+[features.mcp.stdio]
+enabled = true
+allowed_executables = ["npx", "uvx"]
+
+# =============================================
+# UI Customization
+# =============================================
+[UI]
+name = "ChatAUI (Afaq Ul Islam AI Chat Assistant)"
+description = "An intelligent assistant built by Afaq Ul Islam — Frontend Developer."
+
+cot = "full"
+alert_style = "classic"
+
+# Images & Branding
+login_page_image = "public/github_banner.png"
+login_page_image_filter = "brightness-50 grayscale"
+
+logo_file_url_light = "public/logo_light.png"
+logo_file_url_dark = "public/logo_dark.png"
+default_avatar_file_url = "public/avatar.png"
+
+# Meta (for social sharing)
+custom_meta_url = "https://afaqulislam-chataui.hf.space"
+custom_meta_image_url = "public/github_banner.png"
+
+# Optional Header Links
+[[UI.header_links]]
+name = "GitHub"
+display_name = "View Source"
+icon_url = "https://cdn-icons-png.flaticon.com/512/25/25231.png"
+url = "https://github.com/afaqulislam"
+
+# =============================================
+# Meta
+# =============================================
+[meta]
+generated_by = "2.8.1"
