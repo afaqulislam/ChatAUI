@@ -1,292 +1,253 @@
-# 🤖 ChatAUI
+# 🤖 ChatAUI — Advanced Conversational AI Agent
 
-### Advanced Chat Agent — AI Chatbot powered by Chainlit & OpenAI Agents SDK
+<p align="center">
+  <img src="public/logo_dark.png" alt="ChatAUI Logo" width="220px" />
+</p>
+
+<p align="center">
+  <strong>An enterprise-grade, stateful conversational AI assistant built using Chainlit, OpenAI Agents SDK, and python-dotenv. Engineered with modern package management (UV) and robust OAuth security (Google & GitHub).</strong>
+</p>
 
 <p align="center">
   <a href="https://www.python.org/">
-    <img src="https://img.shields.io/badge/Python-3.10+-blue.svg?logo=python" />
+    <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python Version" />
   </a>
   <a href="https://docs.chainlit.io">
-    <img src="https://img.shields.io/badge/Framework-Chainlit-0f172a?logo=react&logoColor=61dafb" />
+    <img src="https://img.shields.io/badge/Framework-Chainlit-FF5733?style=for-the-badge&logo=react&logoColor=white" alt="Chainlit" />
   </a>
-  <a href="https://openai.com">
-    <img src="https://img.shields.io/badge/AI-OpenAI%20Agents%20SDK-black?logo=openai" />
+  <a href="https://github.com/openai/openai-agents-python">
+    <img src="https://img.shields.io/badge/AI%20SDK-OpenAI%20Agents-black?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI Agents SDK" />
+  </a>
+</p>
+<p align="center">
+  <a href="https://github.com/astral-sh/uv">
+    <img src="https://img.shields.io/badge/Package%20Manager-UV-8A2BE2?style=for-the-badge&logo=cargo&logoColor=white" alt="UV Package Manager" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License" />
   </a>
   <a href="https://huggingface.co">
-    <img src="https://img.shields.io/badge/Deployed%20on-Hugging%20Face-yellow?logo=huggingface" />
-  </a>
-  <a href="https://console.cloud.google.com/">
-    <img src="https://img.shields.io/badge/Auth-Google%20%7C%20GitHub-orange?logo=google" />
+    <img src="https://img.shields.io/badge/Deployment-Hugging%20Face%20Spaces-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Hugging Face" />
   </a>
 </p>
 
-> **ChatAUI** is an advanced, stateful conversational AI system built with **Chainlit**, **OpenAI Agents SDK**, and **UV**, featuring **OAuth authentication**, **custom UI elements**, and **real-time streaming responses**.
+---
+
+## 📖 Table of Contents
+1. [Overview](#-overview)
+2. [Key Features](#-key-features)
+3. [Architecture & Flow](#-architecture--flow)
+4. [Tech Stack](#-tech-stack)
+5. [Getting Started (Local Setup)](#-getting-started-local-setup)
+6. [Project Structure](#-project-structure)
+7. [Deployment (Hugging Face / Docker)](#-deployment-hugging-face--docker)
+8. [License](#-license)
+9. [Author & Contact](#-author--contact)
 
 ---
 
-## ✨ Features
+## 🌟 Overview
 
-- 🧠 **OpenAI Agents SDK** — Intelligent reasoning with tool calling
-- 💬 **Chainlit UI** — Reactive UI with token streaming
-- 🔐 **OAuth Authentication** — GitHub & Google login support
-- 💾 **Stateful Conversations** — Memory preserved per session
-- 🧩 **Custom UI Elements** — JSX-based loaders and components
-- ⚙️ **Custom Tools Support** — Local functions & API tools
-- ☁️ **Hugging Face Deployment** — HTTPS-ready, Docker-based
-- 🔌 **Flexible LLM Support** — OpenRouter, GPT, Gemini, etc.
+**ChatAUI** is a production-ready conversational AI agent designed to act as an interactive resume and personal assistant for **Afaq Ul Islam**. It demonstrates how to leverage modern LLM engineering paradigms like **tool calling (function calling)**, **agentic state management**, and **interactive custom UI components** in Python.
+
+By integrating the state-of-the-art **OpenAI Agents SDK** with a sleek **Chainlit** frontend, ChatAUI delivers a fluid, token-streamed chat experience powered by flexible backend APIs (such as OpenRouter). The project is built for secure environments, leveraging OAuth 2.0 (Google and GitHub) for identity provider (IdP) authentication.
+
+---
+
+## ✨ Key Features
+
+*   🤖 **OpenAI Agents SDK Integration:** Leverages declarative agent definitions and autonomous, multi-turn tool execution.
+*   ⚡ **Ultra-Fast Runtime with UV:** Utilizes Astral's `uv` for lightning-fast Python dependency management, virtual environments, and reproducible builds.
+*   🔄 **Real-Time Token Streaming:** Streaming responses with sub-second time-to-first-token (TTFT).
+*   🔐 **OAuth 2.0 Authentication:** Built-in support for securing user sessions using GitHub and Google login providers.
+*   💾 **Session-Level Chat Memory:** Remembers context across multi-turn queries using Chainlit's stateful user sessions.
+*   🎨 **Custom React Elements:** Injects custom loaders (like `DottedLoader.jsx`) directly into the chat stream to enhance UX during tool execution.
+*   🛠️ **Local Agentic Tools:** Integrates native Python function tools (`get_afaqulislam_data`) that safely format and retrieve localized JSON information.
+
+---
+
+## 📐 Architecture & Flow
+
+The interaction between the user, frontend, agent orchestrator, and external API services is designed for performance and separation of concerns:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Chat User
+    participant CL as Chainlit Frontend
+    participant Agent as Agent Orchestrator (main.py)
+    participant Tool as Python Function Tool (data.py)
+    participant LLM as OpenRouter API
+
+    User->>CL: Submit Query ("What are Afaq's skills?")
+    CL->>Agent: Forward Message & History
+    Agent->>CL: Mount Custom Loader (DottedLoader.jsx)
+    Agent->>LLM: Evaluate Prompt & Tool Specs
+    LLM-->>Agent: Suggest Tool Call: get_afaqulislam_data()
+    Agent->>Tool: Execute function tool
+    Tool-->>Agent: Return structured JSON profile data
+    Agent->>LLM: Send Tool Output + History
+    LLM-->>Agent: Return response stream (tokens)
+    Agent->>CL: Unmount Loader & Stream response tokens
+    CL-->>User: Display final response
+```
 
 ---
 
 ## 🧱 Tech Stack
 
-| Layer               | Technology                 |
-| ------------------- | -------------------------- |
-| **Language**        | Python 3.10+               |
-| **Framework**       | Chainlit                   |
-| **AI SDK**          | OpenAI Agents SDK          |
-| **Env Manager**     | python-dotenv              |
-| **Runtime Manager** | UV                         |
-| **Auth Providers**  | Google OAuth, GitHub OAuth |
-| **Cloud Platform**  | Hugging Face Spaces        |
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Language** | Python 3.11+ | Main programming language |
+| **Frontend** | Chainlit | Reactive chat UI & session state management |
+| **AI Orchestration** | OpenAI Agents SDK | Agent structure, history tracking, and tool execution |
+| **Model Hosting** | OpenRouter / OpenAI | API access to top LLMs (Gemini, Claude, GPT) |
+| **Package Manager** | `uv` (by Astral) | Ultra-fast dependency resolution and virtual environments |
+| **Authentication** | OAuth 2.0 | Google & GitHub Identity Providers |
+| **UI Components** | React (JSX) | Custom loaders and UI layout modifications |
+| **Deployment** | Docker | Containerized target platform |
 
 ---
 
-## ⚙️ Getting Started (Local Development)
+## ⚙️ Getting Started (Local Setup)
 
-### 1️⃣ Install UV
+To set up and run the project locally, ensure you have **Python 3.11+** installed. We recommend using **UV** for managing dependencies.
 
-**macOS / Linux**
-
+### 1. Install UV
+**macOS / Linux:**
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
-
-**Windows (PowerShell)**
-
+**Windows (PowerShell):**
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-**Verify:**
-
+### 2. Clone the Repository & Initialize Environment
 ```bash
-uv --version
+git clone https://github.com/afaqulislam/chataui.git
+cd chataui
 ```
 
-### 2️⃣ Initialize Project
-
+Create and activate a virtual environment:
 ```bash
-uv init chataui-app
-cd chataui-app
-```
-
-### 3️⃣ Install Dependencies
-
-```bash
-uv add chainlit python-dotenv openai-agents
-```
-
-### 4️⃣ Activate Virtual Environment
-
-**Windows**
-
-```bash
+uv venv
+# On Windows
 .venv\Scripts\activate
-```
-
-**macOS / Linux**
-
-```bash
+# On macOS/Linux
 source .venv/bin/activate
 ```
 
-### 5️⃣ Test Chainlit
-
+### 3. Install Dependencies
 ```bash
-chainlit hello
+uv pip install -r pyproject.toml
 ```
+*(Alternatively, run `uv sync` if utilizing workspace features).*
 
-**Open:**
-
-```
-http://localhost:8000
-```
-
-If you see the Chainlit welcome screen, setup is correct.
-
-### 6️⃣ Environment Variables
-
-Create a `.env` file in the root:
-
+### 4. Configure Environment Variables
+Create a `.env` file in the root folder:
 ```ini
-OPENROUTER_API_KEY=your_openrouter_api_key
+OPENROUTER_API_KEY=your-openrouter-api-key
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-OPENROUTER_MODEL=your_model_name
+OPENROUTER_MODEL=your-chosen-model-name
 
-OAUTH_GITHUB_CLIENT_ID=your_github_client_id
-OAUTH_GITHUB_CLIENT_SECRET=your_github_client_secret
+# OAuth Configuration (Optional for local testing if auth is disabled in chainlit.yaml)
+OAUTH_GITHUB_CLIENT_ID=your-github-client-id
+OAUTH_GITHUB_CLIENT_SECRET=your-github-client-secret
+OAUTH_GOOGLE_CLIENT_ID=your-google-client-id
+OAUTH_GOOGLE_CLIENT_SECRET=your-google-client-secret
 
-OAUTH_GOOGLE_CLIENT_ID=your_google_client_id
-OAUTH_GOOGLE_CLIENT_SECRET=your_google_client_secret
+# Secret key for encrypting cookie sessions
+CHAINLIT_AUTH_SECRET=your-chainlit-auth-secret
+CHAINLIT_URL=your_chainlit_url_here
 
-CHAINLIT_AUTH_SECRET=your_chainlit_auth_secret
 ```
+*Tip: You can generate a random secure auth secret using: `chainlit create-secret`*
 
-Generate Chainlit secret:
-
-```bash
-chainlit create-secret
-```
-
-### 7️⃣ Chainlit Configuration
-
-Create `chainlit.yaml`:
-
-```yaml
-chainlit: 2.9.4
-
-ui:
-  name: "ChatAUI"
-  description: "Advanced stateful AI chatbot with OAuth authentication built using Chainlit and OpenAI Agents SDK."
-```
-
-### 8️⃣ Run the App 🚀
-
+### 5. Launch the Application 🚀
 ```bash
 chainlit run main.py -w
 ```
+The application will start, typically exposing the server at `http://localhost:8000`. The `-w` flag enables hot reloading during development.
 
-**Visit:**
+---
+
+## 📂 Project Structure
 
 ```
-http://localhost:8000
+chataui-app/
+├── .venv/                  # Virtual environment
+├── public/                 # Static assets and custom components
+│   ├── elements/
+│   │   └── DottedLoader.jsx# Custom React wave loader
+│   ├── avatar.png          # Chatbot assistant avatar
+│   ├── favicon.png         # Website favicon
+│   ├── logo_dark.png       # Dark theme application logo
+│   ├── logo_light.png      # Light theme application logo
+│   └── theme.json          # Theme custom styling configuration
+├── .env.example            # Template for environment configuration
+├── .gitignore
+├── LICENSE                 # MIT Open-source license
+├── README.md               # Professional documentation
+├── chainlit.md             # Welcome page shown on user login
+├── chainlit.yaml           # Global configurations and OAuth setup
+├── data.py                 # Structured resume & skills database
+├── instructions.py         # System prompt & instruction manual for the agent
+├── main.py                 # Main entrypoint initiating Chainlit hooks & AI Agents
+├── pyproject.toml          # Declarative metadata and dependencies
+└── uv.lock                 # Pinned reproducible dependency lockfile
 ```
 
-Login with **Google** or **GitHub** and start chatting.
-
 ---
 
-## ☁️ Deployment on Hugging Face (Docker Space)
+## ☁️ Deployment (Hugging Face / Docker)
 
-Hugging Face Spaces provide **automatic HTTPS**, making them ideal for **OAuth-based Chainlit apps**.
+This repository is optimized for Docker-based hosting platforms, specifically **Hugging Face Spaces**, which automatically provisions SSL certificates required for secure OAuth redirection.
 
----
-
-### 1️⃣ Space Settings
-
-- **SDK**: Docker
-- **Port**: `7860`
-- **Visibility**: Public or Private
-
----
-
-### 2️⃣ Dockerfile
-
-Create `Dockerfile` in project root:
+### Dockerfile Configuration
+To build the Docker image, use the following `Dockerfile` structure:
 
 ```dockerfile
 FROM python:3.11-slim
 
-WORKDIR /
+WORKDIR /app
 
-# Install Python packages manually
-RUN pip install --no-cache-dir chainlit
-RUN pip install --no-cache-dir openai-agents
-RUN pip install --no-cache-dir python-dotenv
-RUN pip install --no-cache-dir openai
-RUN pip install --no-cache-dir requests
-RUN pip install --no-cache-dir httpx
-RUN pip install --no-cache-dir pydantic
+# Upgrade pip and install build dependencies
+RUN pip install --no-cache-dir --upgrade pip
 
+# Copy project files
 COPY . .
+
+# Install dependencies directly from pyproject.toml
+RUN pip install --no-cache-dir .
 
 EXPOSE 7860
 
-# ---- Start Chainlit ----
+# Launch Chainlit pointing to the Space port
 CMD ["chainlit", "run", "main.py", "--host", "0.0.0.0", "--port", "7860"]
 ```
 
----
-
-### 3️⃣ Hugging Face Secrets
-
-In **Space → Settings → Secrets**, add:
-
-```ini
-OPENROUTER_API_KEY=xxxx
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-OPENROUTER_MODEL=your_model
-
-OAUTH_GITHUB_CLIENT_ID=xxxx
-OAUTH_GITHUB_CLIENT_SECRET=xxxx
-
-OAUTH_GOOGLE_CLIENT_ID=xxxx
-OAUTH_GOOGLE_CLIENT_SECRET=xxxx
-
-CHAINLIT_AUTH_SECRET=xxxx
-```
-
-⚠️ Never commit `.env` to GitHub.
+### Production OAuth Integration
+Ensure your OAuth callback URLs match the public domain of your deployment:
+*   **GitHub Callback:** `https://<your-space-name>.hf.space/auth/github/callback`
+*   **Google Callback:** `https://<your-space-name>.hf.space/auth/google/callback`
 
 ---
 
-### 4️⃣ OAuth Callback URLs
+## 📄 License
 
-Replace callbacks in GitHub / Google dashboards with:
-
-**GitHub**
-
-```
-https://<your-space-name>.hf.space/auth/github/callback
-```
-
-**Google**
-
-```
-https://<your-space-name>.hf.space/auth/google/callback
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📂 Folder Structure
+## 🧑‍💻 Author & Contact
 
-```
-chataui-app/
-│
-├── public
-│   ├── elements
-│   │   └── DottedLoader.jsx
-│   ├── avatar.png
-│   ├── favicon.png
-│   ├── github_banner.png
-│   ├── logo_dark.png
-│   ├── logo_light.png
-│   └── theme.json
-├── .gitignore
-├── README.md
-├── chainlit.md
-├── chainlit.yaml
-├── data.py
-├── instructions.py
-├── main.py
-├── pyproject.toml
-└── uv.lock
-```
+**Afaq Ul Islam**
+*   **Role:** Frontend Developer | SEO Specialist | Agentic AI Developer
+*   **Website:** [https://afaqulislam.github.io](https://afaqulislam.github.io)
+*   **LinkedIn:** [linkedin.com/in/afaqulislam](https://www.linkedin.com/in/afaqulislam)
+*   **GitHub:** [github.com/afaqulislam](https://github.com/afaqulislam)
+*   **Email:** [afaqulislam707@gmail.com](mailto:afaqulislam707@gmail.com)
 
 ---
-
-## 🧑‍💻 Author
-
-**👨‍💻 Afaq Ul Islam**
-Frontend Developer | SEO Specialist | Freelancer | Agentic AI Developer
-🌐 [Afaq Ul Islam - Portfolio](https://afaqulislam.github.io)
-💼 [Afaq Ul Islam - Linkedin](https://www.linkedin.com/in/afaqulislam)
-🐙 [Afaq Ul Islam - Twitter(X)](https://x.com/afaqulislam708)
-
-> Passionate about building intelligent, scalable, and production-ready AI systems.
-
----
-
-### 🧠 Built with
-
-**Python · Chainlit · OpenAI Agents SDK · OpenRouter · Hugging Face · OAuth**
+*Built with ❤️ utilizing the power of Python, Chainlit, and Agentic AI.*
